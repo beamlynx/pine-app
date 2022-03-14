@@ -2,12 +2,13 @@ import React, { ReactElement } from "react";
 
 import { observer } from "mobx-react-lite";
 import { useStores } from "./store/container";
+import { Typography } from "@mui/material";
 
-const PineQuery = observer(() => {
+const PineError = observer(() => {
     const { store } = useStores();
     return (
-      <pre>{store.query}</pre>
+        <Typography variant="caption" component="code" color="red">{store.error}</Typography>
     );
   });
 
-export default PineQuery;
+export default PineError;
