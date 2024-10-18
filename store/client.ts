@@ -1,66 +1,24 @@
-import { Session } from './session';
+import { Ast, State } from './http';
 
 const base = 'http://localhost:33333';
 
-export type Table = { schema: string; table: string; alias: string };
-export type TableHint = {
-  schema: string;
-  table: string;
-  column: string;
-  parent: boolean;
-  pine: string;
-};
-
-export type Hints = { table: TableHint[] };
-// There are more operations. I'll add them as we need to handle them here
-export type Operation = { type: 'table' | 'delete' };
-
-/**
- * TODO: move to Session
- */
-export type Ast = {
-  hints: Hints;
-  'selected-tables': Table[];
-  joins: string[][];
-  context: string;
-  operation: Operation;
-};
-export type State = Ast;
-
-export type Response = {
+type Response = {
   result: (string | number)[][];
   'connection-id': string;
   query: string;
   error: string;
   'error-type': string;
-  state: Ast;
+  /**
+   * @deprecated
+   */
+  state: State;
   ast: Ast;
 };
 
-/**
- * @deprecated Use `HttpClient'
- */
-export const Http = {
-  /**
-   * @deprecated Use `HttpClient`
-   */
-  get: async (path: string): Promise<Response | undefined> => {
-    const res = await fetch(`${base}/api/v1/${path}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    if (!res.ok) {
-      return;
-    }
-    return await res.json();
-  },
+export class HttpClient {
+  constructor() {}
 
-  /**
-   * @deprecated Use `HttpClient`
-   */
-  post: async (path: string, body: object): Promise<Response | undefined> => {
+  private async post(path: string, body: object): Promise<Response | undefined> {
     const res = await fetch(`${base}/api/v1/${path}`, {
       method: 'POST',
       headers: {
@@ -72,11 +30,7 @@ export const Http = {
       return;
     }
     return await res.json();
-  },
-};
-
-export class Client {
-  constructor(private readonly onBuild?: (state: State) => void) {}
+  }
 
   private cleanExpression(expression: string): string {
     const e = expression.trim();
@@ -84,7 +38,7 @@ export class Client {
   }
 
   public async eval(expression: string): Promise<Response> {
-    const response = await Http.post('eval', { expression: this.cleanExpression(expression) });
+    const response = await this.post('eval', { expression: this.cleanExpression(expression) });
     if (!response) {
       throw new Error('No response when trying to eval');
     }
@@ -97,7 +51,7 @@ export class Client {
   public async getFirstColumnName(
     expression: string,
   ): Promise<{ columnName: string; state: State }> {
-    const response = await Http.post('eval', {
+    const response = await this.post('eval', {
       expression: this.cleanExpression(`${expression} | 1`),
     });
     if (!response) {
@@ -106,13 +60,13 @@ export class Client {
     return { columnName: response.result[0][0] as string, state: response.state };
   }
 
-  private async build(expression: string): Promise<Response> {
-    const x = this.cleanExpression(expression);
-    const response = await Http.post('build', { expression: x });
+  public async build(expression: string): Promise<Response> {
+    // const x = this.cleanExpression(expression);
+    const x = expression;
+    const response = await this.post('build', { expression: x });
     if (!response) {
       throw new Error('No response when trying to build');
     }
-    this.onBuild && (await this.onBuild(response.state));
     return response;
   }
 
@@ -134,11 +88,11 @@ export class Client {
     // hence removing the trailing `|`, but we want to keep it. So we clean the
     // expression and add it explicitly
     const x = `${this.cleanExpression(expression)} |`;
-    const response = await Http.post('build', { expression: x });
+    const response = await this.post('build', { expression: x });
     if (!response) {
       throw new Error('No response when trying to make child Expressions');
     }
-    this.onBuild && (await this.onBuild(response.state));
+    // this.onBuild && (await this.onBuild(response.state));
     const expressions = response.state.hints.table
       .filter(h => !h.parent)
       .map(h => `${x} ${h.pine}`);
