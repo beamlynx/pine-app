@@ -17,7 +17,7 @@ body {
 }
 
 a {
-  color: inherit;
+  color: #90caf9;
   text-decoration: none;
 }
 
@@ -32,10 +32,19 @@ a {
 
 /* Focus */
 
-.unfocussed {
-  border: 2px solid lightgray;
+[data-theme="light"] .unfocussed {
+  border: none;
 }
 
-.focussed {
-  border: 2px solid rgb(25, 118, 210);
+[data-theme="light"] .focussed {
+  /* border: 2px solid rgb(25, 118, 210); */
+  border: none;
+}
+
+[data-theme="dark"] .unfocussed {
+  border: none;
+}
+
+[data-theme="dark"] .focussed {
+  border: none;
 }

@@ -29,13 +29,6 @@ const Home: NextPage = () => {
     };
   }, [global]);
 
-  const UserContent = isDevelopment ? (
-    <Typography variant="caption" color="gray">
-      Dev Mode
-    </Typography>
-  ) : (
-    <UserBox />
-  );
 
   const AppContent = (
     <Container
@@ -57,7 +50,7 @@ const Home: NextPage = () => {
         </Grid>
 
         <Grid item xs={1}>
-          {UserContent}
+          <UserBox />
         </Grid>
       </Grid>
 

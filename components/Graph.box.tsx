@@ -148,9 +148,7 @@ const Flow: React.FC<FlowProps> = observer(({ sessionId }) => {
       fitView
       minZoom={0.1}
       proOptions={{ hideAttribution: true }}
-    >
-      <Controls />
-    </ReactFlow>
+    />
   );
 });
 

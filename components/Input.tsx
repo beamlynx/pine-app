@@ -1,6 +1,6 @@
 import TextField from '@mui/material/TextField';
 import { observer } from 'mobx-react-lite';
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useStores } from '../store/store-container';
 import { prettifyExpression } from '../store/util';
 

@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useStores } from '../store/store-container';
 import { Box, Typography } from '@mui/material';
+import { useTheme } from '../store/theme-context';
 
 interface QueryProps {
   sessionId: string;
@@ -10,6 +11,7 @@ interface QueryProps {
 const Query: React.FC<QueryProps> = observer(({ sessionId }) => {
   const { global: store } = useStores();
   const session = store.getSession(sessionId);
+  const { isDarkMode } = useTheme();
 
   const onClick = () => {
     if (!session.query) {
@@ -41,7 +43,28 @@ const Query: React.FC<QueryProps> = observer(({ sessionId }) => {
 
   if (session.query) {
     return (
-      <Box sx={{ m: 1, overflow: 'auto' }}>
+      <Box
+        sx={{
+          m: 1,
+          overflow: 'auto',
+          '&::-webkit-scrollbar': {
+            height: '8px',
+            cursor: 'pointer',
+            borderRadius: '4px',
+          },
+          '&::-webkit-scrollbar-track': {
+            background: 'transparent',
+            borderRadius: '4px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            background: '#888',
+            borderRadius: '4px',
+            '&:hover': {
+              background: '#555',
+            },
+          },
+        }}
+      >
         <pre
           onClick={onClick}
           style={{ cursor: 'pointer', margin: 0, paddingTop: 20, paddingBottom: 20 }}

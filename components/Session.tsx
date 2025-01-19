@@ -18,7 +18,7 @@ const Sidebar = ({ sessionId }: { sessionId: string }) => (
     }}
   >
     <Input sessionId={sessionId} />
-    <Box sx={{ border: '1px solid lightgray', borderRadius: 1, mt: 1 }}>
+    <Box sx={{ mt: 1 }}>
       <Query sessionId={sessionId} />
     </Box>
   </Box>
@@ -45,7 +45,7 @@ const MainView = ({
         className={mode === 'graph' ? 'focussed' : 'unfocussed'}
         sx={{
           borderRadius: 1,
-          height: 'calc(100vh - 122px)',
+          height: 'calc(100vh - 140px)',
           overflow: 'hidden',
         }}
       >
@@ -61,7 +61,7 @@ const Session: React.FC<SessionProps> = observer(({ sessionId }) => {
 
   return (
     <Grid container>
-      <Grid container sx={{ mt: 2, height: 'calc(100vh - 122px)' }}>
+      <Grid container sx={{ mt: 2, height: 'calc(100vh - 140px)' }}>
         <Grid item xs={2}>
           <Sidebar sessionId={sessionId} />
         </Grid>

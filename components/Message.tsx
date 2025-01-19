@@ -31,11 +31,11 @@ const Message: React.FC<MessageProps> = observer(({}) => {
       </Typography>
     );
   }
+  const message =
+    devOnly(`mode: ${session.mode} | `) + devOnly(`loaded: ${session.loaded} | `) + session.message;
   return (
     <Typography variant="caption" color="gray">
-      {devOnly(`mode: ${session.mode} | `)}
-      {devOnly(`loaded: ${session.loaded} | `)}
-      {session.message}
+      {message.length > 140 ? message.substring(0, 140) + '...' : message}
     </Typography>
   );
 });
